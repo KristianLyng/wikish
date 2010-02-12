@@ -1,16 +1,39 @@
 #!/bin/bash
+# Wiki.sh - shell/awk-interface to mediawiki
+# Copyright (C) 2010 Redpill Linpro AS
+# Author: Kristian Lyngstøl <kristian@bohemians.org>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PROTO="https"
-HOST="wiki.varnish-software.com"
-API="mediawiki/api.php?"
-USER="kristian"
-echo password:
-read PASSWORD
+
+. wikish.config
+
 TIM=$(date +%s)
 
 function usage
 {
 	echo "RTFS!";
+	echo "On a happier note:"
+	echo " Configure stuff in wikish.config, then: "
+	echo " ./wiki.sh GET Some_Page"
+	echo " ./wiki.sh POST Some_Page"
+	echo " (Any trailing .wiki in the page-name is stripped)"
+	echo " Existing versions are not overwritten locally, but backed up."
+	echo " and are safe to remove."
+	echo " Oh yeah, and so far we/I/wikish only supports basich http auth"
+	echo " ... and no conflict-handling."
 }
 
 PAGE=$2
@@ -18,6 +41,9 @@ if [ -z "$2" ]; then
 	usage;
 	exit 1;
 fi
+
+# Allows for Main_Page and Main_Page.wiki - ie: tab completion.
+PAGE=$(echo $PAGE | sed s/.wiki$//);
 
 if [ x$1 == "xGET" ]; then
 	if [ -f $PAGE.wiki ]; then
@@ -70,9 +96,7 @@ if [ x$1 == "xGET" ]; then
 	sed -i "s/\&apos;/\\'/g" $PAGE.wiki
 	sed -i 's/&lt;/</g' $PAGE.wiki
 	sed -i 's/&gt;/>/g' $PAGE.wiki
-
  elif [ x$1 == "xPOST" ]; then
- 	PAGE=$(echo $PAGE | sed s/.wiki$//);
  	BURL="${PROTO}://${USER}:${PASSWORD}@${HOST}/${API}"
  	GET -USse "${BURL}action=query&format=txt&prop=info&intoken=edit&titles=$PAGE" | awk -v page="$PAGE" -v burl="$BURL" '
 		BEGIN {
