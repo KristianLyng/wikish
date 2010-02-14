@@ -18,6 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
+# Order matters - 'cause I'm lazy.
 . wikish.config
 
 TIM=$(date +%s)
@@ -29,6 +30,7 @@ function usage
 	echo " Configure stuff in wikish.config, then: "
 	echo " ./wiki.sh GET Some_Page"
 	echo " ./wiki.sh POST Some_Page"
+	echo " ./wiki.sh EDIT Some_Page"
 	echo " (Any trailing .wiki in the page-name is stripped)"
 	echo " Existing versions are not overwritten locally, but backed up."
 	echo " and are safe to remove."
@@ -45,7 +47,8 @@ fi
 # Allows for Main_Page and Main_Page.wiki - ie: tab completion.
 PAGE=$(echo $PAGE | sed s/.wiki$//);
 
-if [ x$1 == "xGET" ]; then
+function getit
+{
 	if [ -f $PAGE.wiki ]; then
 		echo "Moving $PAGE.wiki to $PAGE.wiki.$TIM"
 		if [ -f $PAGE.wiki.$TIM ]; then
@@ -96,7 +99,10 @@ if [ x$1 == "xGET" ]; then
 	sed -i "s/\&apos;/\\'/g" $PAGE.wiki
 	sed -i 's/&lt;/</g' $PAGE.wiki
 	sed -i 's/&gt;/>/g' $PAGE.wiki
- elif [ x$1 == "xPOST" ]; then
+}
+
+function postit
+{
  	BURL="${PROTO}://${USER}:${PASSWORD}@${HOST}/${API}"
  	GET -USse "${BURL}action=query&format=txt&prop=info&intoken=edit&titles=$PAGE" | awk -v page="$PAGE" -v burl="$BURL" '
 		BEGIN {
@@ -126,6 +132,32 @@ if [ x$1 == "xGET" ]; then
 			printf "-b wikiToken=" wikiToken " -b wiki_session=" wiki_session;
 			printf " \"" burl "format=txt&action=edit&title=%s&token=%s\" \n", page, edittoken
 		}
-		' > .$PAGE.commitcmd
-		. .$PAGE.commitcmd
+		' | sh
+}
+
+
+if [ x$1 == "xGET" ]; then
+	getit
+elif [ x$1 == "xPOST" ]; then
+	postit
+elif [ x$1 == "xEDIT" ]; then
+	getit
+	cp $PAGE.wiki $PAGE.wiki.original.$TIM
+	# Thank Red Hat for the non-vi-clone support: they keep /bin/vi
+	# bastardized so you need/want to run 'vim' explicitly. Otherwise
+	# there would be no reason to support other editors.
+	if [ -z "$EDITOR" ]; then
+		vi $PAGE.wiki
+	else
+		$EDITOR $PAGE.wiki
+	fi
+	diff -q $PAGE.wiki $PAGE.wiki.original.$TIM && {
+		echo "No diff between original and new version... I think."
+		echo "(so no posting it)"
+		exit 1;
+	}
+	postit
+else
+	echo "Unknown arguments" >&2
+	usage
 fi
