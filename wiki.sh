@@ -1,6 +1,7 @@
 #!/bin/bash
 # Wiki.sh - shell/awk-interface to mediawiki
 # Copyright (C) 2010 Redpill Linpro AS
+# Copyright (C) 2010 Kristian Lyngstol
 # Author: Kristian Lyngstøl <kristian@bohemians.org>
 # 
 # This program is free software; you can redistribute it and/or modify
