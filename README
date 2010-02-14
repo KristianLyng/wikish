@@ -1,1 +1,17 @@
-/home/kristian/Source/wikish/wiki.sh
+Wikish is a basic shell script to edit a mediawiki wiki
+
+Dependencies in order of what you're least likely to already have:
+
+	lwp-request (with ssl-support if you use https. SSLeay )
+	curl
+	gawk (I think. Might work with mawk too)
+	bash
+	diff (For EDIT-mode)
+	date
+	sh (meh....)
+	mv
+	cp
+
+Installation: Just run it and it'll whine at you. Basically move
+wikish.config to ~/.config/, edit it and then set up wiki.sh somewhere. It
+creates a few trash-files so you may want to keep it in a directory.
