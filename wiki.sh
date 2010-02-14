@@ -19,10 +19,25 @@
 
 
 # Order matters - 'cause I'm lazy.
-. wikish.config
+
+
+# Strictly speaking we should evaluate a handful of environmental
+# variables, check for a global configuration in a couple of different
+# places, then fall back to where everyone keeps it anyway. I've done that
+# crap once in a shell script (See compiz-manager), and it's no fun to
+# repeat.
+if [ ! -f ~/.config/wikish.config ]; then
+	echo "You need to move wikish.config to ~/.config/ and edit it";
+	echo "(see, we're XDG-basedir-compliant without needing a huge library!)"
+	echo "((((sort of.....))))"
+	exit 1;
+fi
+
+. ~/.config/wikish.config
 
 TIM=$(date +%s)
 
+# Should probably >&2
 function usage
 {
 	echo "RTFS!";
@@ -39,6 +54,7 @@ function usage
 	echo " ... and no conflict-handling."
 }
 
+# Yeah, the placement is ugly. This script doesn't read nicely anymore.
 PAGE=$2
 if [ -z "$2" ]; then
 	usage;
@@ -48,6 +64,7 @@ fi
 # Allows for Main_Page and Main_Page.wiki - ie: tab completion.
 PAGE=$(echo $PAGE | sed s/.wiki$//);
 
+# Gets $PAGE and stores it to $PAGE.wiki
 function getit
 {
 	if [ -f $PAGE.wiki ]; then
@@ -102,6 +119,8 @@ function getit
 	sed -i 's/&gt;/>/g' $PAGE.wiki
 }
 
+# Gets an edittoken and session for editing $PAGE and posts the local
+# $PAGE.wiki
 function postit
 {
  	BURL="${PROTO}://${USER}:${PASSWORD}@${HOST}/${API}"
@@ -159,6 +178,7 @@ elif [ x$1 == "xEDIT" ]; then
 	}
 	postit
 elif [ x$1 == "xCLEAN" ]; then
+	# Generate too much crap. One day I will put it in dot-files.
 	RMS=*.wiki.*[0-9]*
 	echo "About to kill: "
 	echo $RMS
