@@ -16,4 +16,10 @@ Installation: Just run it and it'll whine at you. Basically move
 wikish.config to ~/.config/, edit it and then set up wiki.sh somewhere. It
 creates a few trash-files so you may want to keep it in a directory.
 
+Symlinks understood: wikiedit, wikiget, wikipost:
+
+./wiki.sh GET Foo == ./wikiget Foo
+./wiki.sh EDIT Foo == ./wikiedit Foo
+./wiki.sh POST Foo == ./wikipost Foo
+
 Comments/suggestions go to: Kristian Lyngstol kristian@bohemians.org

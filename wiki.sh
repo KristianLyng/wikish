@@ -56,8 +56,24 @@ function usage
 }
 
 # Yeah, the placement is ugly. This script doesn't read nicely anymore.
-PAGE=$2
-if [ -z "$2" ]; then
+ME=$(basename $0)
+ACTION=""
+PAGE=""
+if [ $ME = "wikiedit" ]; then
+	ACTION="EDIT"
+	PAGE=$1
+elif [ $ME = "wikiget" ]; then
+	ACTION="GET"
+	PAGE=$1
+elif [ $ME = "wikipost" ]; then
+	ACTION="POST"
+	PAGE=$1
+else
+	ACTION=$1
+	PAGE=$2
+fi
+
+if [ -z "$PAGE" ]; then
 	usage;
 	exit 1;
 fi
@@ -157,11 +173,11 @@ function postit
 }
 
 
-if [ x$1 == "xGET" ]; then
+if [ x$ACTION == "xGET" ]; then
 	getit
-elif [ x$1 == "xPOST" ]; then
+elif [ x$ACTION == "xPOST" ]; then
 	postit
-elif [ x$1 == "xEDIT" ]; then
+elif [ x$ACTION == "xEDIT" ]; then
 	getit
 	cp $PAGE.wiki $PAGE.wiki.original.$TIM
 	# Thank Red Hat for the non-vi-clone support: they keep /bin/vi
@@ -178,7 +194,7 @@ elif [ x$1 == "xEDIT" ]; then
 		exit 1;
 	}
 	postit
-elif [ x$1 == "xCLEAN" ]; then
+elif [ x$ACTION == "xCLEAN" ]; then
 	# Generate too much crap. One day I will put it in dot-files.
 	RMS=*.wiki.*[0-9]*
 	echo "About to kill: "
