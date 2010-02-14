@@ -15,3 +15,5 @@ Dependencies in order of what you're least likely to already have:
 Installation: Just run it and it'll whine at you. Basically move
 wikish.config to ~/.config/, edit it and then set up wiki.sh somewhere. It
 creates a few trash-files so you may want to keep it in a directory.
+
+Comments/suggestions go to: Kristian Lyngstol kristian@bohemians.org
