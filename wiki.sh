@@ -31,6 +31,7 @@ function usage
 	echo " ./wiki.sh GET Some_Page"
 	echo " ./wiki.sh POST Some_Page"
 	echo " ./wiki.sh EDIT Some_Page"
+	echo " ./wiki.sh CLEAN (some random text because my argument-checking is lazy)"
 	echo " (Any trailing .wiki in the page-name is stripped)"
 	echo " Existing versions are not overwritten locally, but backed up."
 	echo " and are safe to remove."
@@ -157,6 +158,17 @@ elif [ x$1 == "xEDIT" ]; then
 		exit 1;
 	}
 	postit
+elif [ x$1 == "xCLEAN" ]; then
+	RMS=*.wiki.*[0-9]*
+	echo "About to kill: "
+	echo $RMS
+	echo "[Y]es/NOOOOOOOO!"
+	read yesno
+	if [ -z $yesno ] || [ $yesno == "Y" ] || [ $yesno == "y" ] || [ $yesno == "all work and no play makes jack a dull boy" ]; then
+		rm $RMS
+	else
+		echo "Bailing!";
+	fi
 else
 	echo "Unknown arguments" >&2
 	usage
