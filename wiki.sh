@@ -201,7 +201,7 @@ elif [ x$ACTION == "xCLEAN" ]; then
 	echo $RMS
 	echo "[Y]es/NOOOOOOOO!"
 	read yesno
-	if [ -z $yesno ] || [ $yesno == "Y" ] || [ $yesno == "y" ] || [ $yesno == "all work and no play makes jack a dull boy" ]; then
+	if [ -z "$yesno" ] || [ "$yesno" == "Y" ] || [ "$yesno" == "y" ] || [ "$yesno" == "all work and no play makes jack a dull boy" ]; then
 		rm $RMS
 	else
 		echo "Bailing!";
