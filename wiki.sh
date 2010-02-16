@@ -143,7 +143,6 @@ function postit
  	BURL="${PROTO}://${USER}:${PASSWORD}@${HOST}/${API}"
  	GET -USse "${BURL}action=query&format=txt&prop=info&intoken=edit&titles=$PAGE" | awk -v page="$PAGE" -v burl="$BURL" '
 		BEGIN {
-			base = "GET -e \"" burl "\"";
 			wiki_session = "";
 			wikiToken = "";
 			edittoken="";
