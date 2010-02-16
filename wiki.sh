@@ -160,7 +160,7 @@ elif [ x$ACTION == "xEDIT" ]; then
 	fi
 	diff -q "$PAGE.wiki" "$PAGE.wiki.original.$TIM" && {
 		echo "No diff between original and new version... I think."
-		echo "(so no posting it)"
+		echo "(so not posting it)"
 		exit 1;
 	}
 	postit

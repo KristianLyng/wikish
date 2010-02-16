@@ -1,5 +1,13 @@
 Wikish is a basic shell script to edit a mediawiki wiki
 
+1. Dependencies
+2. Installation
+3. Usage
+4. Feedback
+
+
+1. Dependencies
+===============
 Dependencies in order of what you're least likely to already have:
 
 	lwp-request (with ssl-support if you use https. SSLeay )
@@ -12,9 +20,11 @@ Dependencies in order of what you're least likely to already have:
 	mv
 	cp
 
-Installation: Just run it and it'll whine at you. Basically move
-wikish.config to ~/.config/, edit it and then set up wiki.sh somewhere. It
-creates a few trash-files so you may want to keep it in a directory.
+2. Installation
+===============
+Move wikish.config to ~/.config/, edit it and then set up wiki.sh
+somewhere. It creates a few trash-files so you may want to keep it in a
+directory.
 
 Symlinks understood: wikiedit, wikiget, wikipost:
 
@@ -22,4 +32,33 @@ Symlinks understood: wikiedit, wikiget, wikipost:
 ./wiki.sh EDIT Foo == ./wikiedit Foo
 ./wiki.sh POST Foo == ./wikipost Foo
 
+If you work with multiple wikis, you can override settings on a
+directory-basis, copying the wikish.config to .wikish.config in the
+respective directory. So to work with wiki.varnish-software.com and
+wiki.redpill-linpro.com, you can have:
+
+~/.config/wikish.config ("global" stuff?)
+~/Wiki/rpl/.wikish.config
+~/Wiki/vs/.wikish.config
+
+Now working in ~/Wiki/rpl/ and ~/Wiki/vs/ is two different wikis.
+
+3. Usage
+========
+Editing:
+	wiki.sh GET Some_Page
+	vim Some_Page
+	wiki.sh POST Some_Page
+
+	OR: wiki.sh EDIT Some_Page
+	OR, if you symlinked: wikiedit Some_Page
+
+To create a new page, just edit Some_New_Page.wiki (from a blank file),
+then post it.
+
+4. Feedback
+===========
 Comments/suggestions go to: Kristian Lyngstol kristian@bohemians.org
+
+Code at: http://github.com/KristianLyng/wikish , including simple issues if
+you prefer that over mail.
