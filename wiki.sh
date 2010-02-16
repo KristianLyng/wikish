@@ -86,17 +86,17 @@ PAGE=$(echo $PAGE | sed s/.wiki$//);
 # Gets $PAGE and stores it to $PAGE.wiki
 function getit
 {
-	if [ -f $PAGE.wiki ]; then
+	if [ -f "$PAGE.wiki" ]; then
 		echo "Moving $PAGE.wiki to $PAGE.wiki.$TIM"
 		if [ -f $PAGE.wiki.$TIM ]; then
 			echo "PANIC! already exist. Stop using loops!";
 			sleep 5;
 			exit 1;
 		fi
-		mv $PAGE.wiki $PAGE.wiki.$TIM
+		mv "$PAGE.wiki" "$PAGE.wiki.$TIM"
 	fi
 
-	GET "${PROTO}://${USER}:${PASSWORD}@${HOST}/index.php?title=${PAGE}&action=raw" > $PAGE.wiki
+	GET "${PROTO}://${USER}:${PASSWORD}@${HOST}/index.php?title=${PAGE}&action=raw" > "$PAGE.wiki"
 	if [ $? == 0 ]; then
 		echo "$PAGE.wiki created seemingly without errors! Phew.";
 	else
@@ -132,10 +132,12 @@ function postit
 		END {
 			gsub("\\\\","\\\\",edittoken);
 			gsub("+","%2B",edittoken);
-			printf "echo | curl --post -k --data-urlencode text@"
-			printf "%s.wiki ", page;
+			title=page
+			gsub(" ","%20",title);
+			printf "echo | curl --post -k --data-urlencode \"text@"
+			printf "%s.wiki\" ", page;
 			printf "-b wikiToken=" wikiToken " -b wiki_session=" wiki_session;
-			printf " \"" burl "format=txt&action=edit&title=%s&token=%s\" \n", page, edittoken
+			printf " \"" burl "format=txt&action=edit&title=%s&token=%s\" \n", title, edittoken
 		}
 		' | sh
 }
@@ -147,16 +149,16 @@ elif [ x$ACTION == "xPOST" ]; then
 	postit
 elif [ x$ACTION == "xEDIT" ]; then
 	getit
-	cp $PAGE.wiki $PAGE.wiki.original.$TIM
+	cp "$PAGE.wiki" "$PAGE.wiki.original.$TIM"
 	# Thank Red Hat for the non-vi-clone support: they keep /bin/vi
 	# bastardized so you need/want to run 'vim' explicitly. Otherwise
 	# there would be no reason to support other editors.
 	if [ -z "$EDITOR" ]; then
-		vi $PAGE.wiki
+		vi "$PAGE.wiki"
 	else
-		$EDITOR $PAGE.wiki
+		$EDITOR "$PAGE.wiki"
 	fi
-	diff -q $PAGE.wiki $PAGE.wiki.original.$TIM && {
+	diff -q "$PAGE.wiki" "$PAGE.wiki.original.$TIM" && {
 		echo "No diff between original and new version... I think."
 		echo "(so no posting it)"
 		exit 1;
