@@ -22,20 +22,33 @@
 # Order matters - 'cause I'm lazy.
 
 
-# Strictly speaking we should evaluate a handful of environmental
-# variables, check for a global configuration in a couple of different
-# places, then fall back to where everyone keeps it anyway. I've done that
-# crap once in a shell script (See compiz-manager), and it's no fun to
-# repeat.
-if [ ! -f ~/.config/wikish.config ]; then
-	echo "You need to move wikish.config to ~/.config/ and edit it";
-	echo "(see, we're XDG-basedir-compliant without needing a huge library!)"
-	echo "((((sort of.....))))"
+# Borrowed from compiz-manager: XDG base dirs is an ugly beast but I like
+# to do this just to remind people that you do not need a library to handle
+# this ugly mess. (I'm looking at you, awesome).
+
+# Read configuration from XDG paths
+NAME=wikish.config
+if [ -z "$XDG_CONFIG_DIRS" ]; then
+	test -f /etc/xdg/$NAME && . /etc/xdg/$NAME
+else
+	test -f $XDG_CONFIG_DIRS/$NAME && . $XDG_CONFIG_DIRS/$NAME
+fi
+
+if [ -z "$XDG_CONFIG_HOME" ]; then
+	test -f $HOME/.config/$NAME && . $HOME/.config/$NAME
+else
+	test -f $XDG_CONFIG_HOME/$NAME && .  $XDG_CONFIG_HOME/$NAME
+fi
+
+if [ -z "$API" ] || [ -z "$USER" ] || [ -z "$HOST" ] || \
+	[ -z "$PASSWORD" ] || [ -z "$PROTO" ]; then
+	echo "Insufficient or missing configuration."
+	echo "Copy $NAME to an xdg-path (typically ~/.config/, see \$XDG_CONFIG_DIRS)"
+	echo "(Hooray for XDG config dirs etc)"
 	exit 1;
 fi
 
-. ~/.config/wikish.config
-
+# Read local config
 test -f .wikish.config && . .wikish.config
 
 TIM=$(date +%s)
