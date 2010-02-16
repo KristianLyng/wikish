@@ -13,7 +13,6 @@ Dependencies in order of what you're least likely to already have:
 	lwp-request (with ssl-support if you use https. SSLeay )
 	curl
 	gawk (I think. Might work with mawk too)
-	bash
 	diff (For EDIT-mode)
 	date
 	sh (meh....)

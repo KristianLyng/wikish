@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Wiki.sh - shell/awk-interface to mediawiki
 # Copyright (C) 2010 Redpill Linpro AS
 # Copyright (C) 2010 Kristian Lyngstol
@@ -54,7 +54,7 @@ test -f .wikish.config && . .wikish.config
 TIM=$(date +%s)
 
 # Should probably >&2
-function usage
+usage()
 {
 	echo "RTFS!";
 	echo "On a happier note:"
@@ -97,7 +97,7 @@ fi
 PAGE=$(echo $PAGE | sed s/.wiki$//);
 
 # Gets $PAGE and stores it to $PAGE.wiki
-function getit
+getit()
 {
 	if [ -f "$PAGE.wiki" ]; then
 		echo "Moving $PAGE.wiki to $PAGE.wiki.$TIM"
@@ -110,7 +110,7 @@ function getit
 	fi
 
 	GET "${PROTO}://${USER}:${PASSWORD}@${HOST}/index.php?title=${PAGE}&action=raw" > "$PAGE.wiki"
-	if [ $? == 0 ]; then
+	if [ $? = 0 ]; then
 		echo "$PAGE.wiki created seemingly without errors! Phew.";
 	else
 		echo "$PAGE.wiki GET-operation may have blown apart.  Abandon ship!"
@@ -120,7 +120,7 @@ function getit
 
 # Gets an edittoken and session for editing $PAGE and posts the local
 # $PAGE.wiki
-function postit
+postit()
 {
  	BURL="${PROTO}://${USER}:${PASSWORD}@${HOST}/${API}"
  	GET -USse "${BURL}action=query&format=txt&prop=info&intoken=edit&titles=$PAGE" | awk -v page="$PAGE" -v burl="$BURL" '
@@ -156,11 +156,11 @@ function postit
 }
 
 
-if [ x$ACTION == "xGET" ]; then
+if [ "x$ACTION" = "xGET" ]; then
 	getit
-elif [ x$ACTION == "xPOST" ]; then
+elif [ "x$ACTION" = "xPOST" ]; then
 	postit
-elif [ x$ACTION == "xEDIT" ]; then
+elif [ "x$ACTION" = "xEDIT" ]; then
 	getit
 	cp "$PAGE.wiki" "$PAGE.wiki.original.$TIM"
 	# Thank Red Hat for the non-vi-clone support: they keep /bin/vi
@@ -177,14 +177,14 @@ elif [ x$ACTION == "xEDIT" ]; then
 		exit 1;
 	}
 	postit
-elif [ x$ACTION == "xCLEAN" ]; then
+elif [ "x$ACTION" = "xCLEAN" ]; then
 	# Generate too much crap. One day I will put it in dot-files.
 	RMS=*.wiki.*[0-9]*
 	echo "About to kill: "
 	echo $RMS
 	echo "[Y]es/NOOOOOOOO!"
 	read yesno
-	if [ -z "$yesno" ] || [ "$yesno" == "Y" ] || [ "$yesno" == "y" ] || [ "$yesno" == "all work and no play makes jack a dull boy" ]; then
+	if [ -z "$yesno" ] || [ "$yesno" = "Y" ] || [ "$yesno" = "y" ] || [ "$yesno" = "all work and no play makes jack a dull boy" ]; then
 		rm $RMS
 	else
 		echo "Bailing!";
