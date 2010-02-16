@@ -36,6 +36,8 @@ fi
 
 . ~/.config/wikish.config
 
+test -f .wikish.config && . .wikish.config
+
 TIM=$(date +%s)
 
 # Should probably >&2
@@ -94,46 +96,13 @@ function getit
 		mv $PAGE.wiki $PAGE.wiki.$TIM
 	fi
 
-	GET "${PROTO}://${USER}:${PASSWORD}@${HOST}/${API}action=query&titles=${PAGE}&export&format=txt" | awk \
-	 'BEGIN {
-		 got_text=0;
-		 text_end=0;
-		 lines=0;
-		 buffer[0]="";
-	 }
-	 / *<text/ {
-		 got_text=1;
-	 }
-	 {
-		if (got_text == 1) {
-			if (lines == 0) {
-				gsub("^ *<text[^>]*>","");
-			}
-			 buffer[lines++] = $0;
-		}
-	 }
-	 / *<\/text>/ {
-		 text_end=lines;
-	 }
-	 END {
-		 for(i = 0; i < text_end; i++) {
-			 if (i == text_end-1) {
-				 gsub("</text>$","",buffer[i])
-			 }
-			 print buffer[i];
-		}
-	 }' > $PAGE.wiki
+	GET "${PROTO}://${USER}:${PASSWORD}@${HOST}/index.php?title=${PAGE}&action=raw" > $PAGE.wiki
 	if [ $? == 0 ]; then
 		echo "$PAGE.wiki created seemingly without errors! Phew.";
 	else
 		echo "$PAGE.wiki GET-operation may have blown apart.  Abandon ship!"
 		exit 2;
 	fi
-	sed -i 's/\&quot;/"/g' $PAGE.wiki
-	sed -i 's/\&amp;/&/g' $PAGE.wiki
-	sed -i "s/\&apos;/\\'/g" $PAGE.wiki
-	sed -i 's/&lt;/</g' $PAGE.wiki
-	sed -i 's/&gt;/>/g' $PAGE.wiki
 }
 
 # Gets an edittoken and session for editing $PAGE and posts the local
