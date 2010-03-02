@@ -148,22 +148,10 @@ postit()
 {
  	BURL="${PROTO}://${USER}:${PASSWORD}@${HOST}/${API}"
 	# Welcome to the school of funky shell-nesting.
-	{
- 		GET -e "${BURL}action=query&format=txt&prop=info&intoken=edit&titles=$PAGE" | awk -v page="$PAGE" -v burl="$BURL" '
+	{	
+ 		curl -s -c cookie.jar "${BURL}action=query&format=txt&prop=info&intoken=edit&titles=$PAGE" | awk -v page="$PAGE" -v burl="$BURL" '
 		BEGIN {
-			wiki_session = "";
-			wikiToken = "";
 			edittoken="";
-		}
-		/^Set-Cookie: wiki_session=/ {
-			gsub("^Set-Cookie: wiki_session=","");
-			gsub(";.*$","");
-			wiki_session=$0;
-		}
-		/^Set-Cookie: wikiToken=/ {
-			gsub("^Set-Cookie: wikiToken=","");
-			gsub(";.*$","");
-			wikiToken=$0;
 		}
 		/\[edittoken\] => / {
 			edittoken = $3;
@@ -175,16 +163,15 @@ postit()
 			gsub(" ","%20",title);
 			printf "echo | curl -s --post -k --data-urlencode \"text@"
 			printf "%s.wiki\" ", page;
-			printf "-b wikiToken=" wikiToken " -b wiki_session=" wiki_session;
+			printf "-b cookie.jar";
 			printf " \"" burl "format=txt&action=edit&title=%s&token=%s\" \n", title, edittoken
 		}
 		' | sh
 		if [ ! $? = "0" ]; then
-			echo "Failed to push. GET returned non-zero" >&2;
+			echo "Failed to push. curl returned non-zero" >&2;
 			exit 1;
 		fi
-	
-	} | grep result
+	} | egrep '(result|title)'
 }
 
 
