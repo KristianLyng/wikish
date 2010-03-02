@@ -88,7 +88,7 @@ if [ -z "$API" ] || [ -z "$USER" ] || [ -z "$HOST" ] || \
 fi
 
 # Read local config
-test -f .wikish.config && . .wikish.config
+test -f $PWD/.wikish.config && . $PWD/.wikish.config
 
 ################
 # Sym-link and argument mapping
