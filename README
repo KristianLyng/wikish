@@ -48,13 +48,14 @@ Now working in ~/Wiki/rpl/ and ~/Wiki/vs/ is two different wikis.
 Usage
 =====
 
-Editing:
+Editing::
+
 	wiki.sh GET Some_Page
 	vim Some_Page
 	wiki.sh POST Some_Page
 
-	OR: wiki.sh EDIT Some_Page
-	OR, if you symlinked: wikiedit Some_Page
+OR: ``wiki.sh EDIT Some_Page``
+OR, if you symlinked: ``wikiedit Some_Page``
 
 To create a new page, just edit Some_New_Page.wiki (from a blank file),
 then post it.
