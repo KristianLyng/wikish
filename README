@@ -1,26 +1,29 @@
+=======================================================
 Wikish is a basic shell script to edit a mediawiki wiki
+=======================================================
 
-1. Dependencies
-2. Installation
-3. Usage
-4. Feedback
+.. sectnum::
+
+.. contents::
 
 
-1. Dependencies
-===============
+Dependencies
+============
+
 Dependencies in order of what you're least likely to already have:
 
-	lwp-request (with ssl-support if you use https. SSLeay )
-	curl
-	gawk (I think. Might work with mawk too)
-	diff (For EDIT-mode)
-	date
-	sh (meh....)
-	mv
-	cp
+- lwp-request (with ssl-support if you use https. SSLeay )
+- curl
+- gawk (I think. Might work with mawk too)
+- diff (For EDIT-mode)
+- date
+- sh (meh....)
+- mv
+- cp
 
-2. Installation
-===============
+Installation
+============
+
 Move wikish.config to ~/.config/, edit it and then set up wiki.sh
 somewhere. It creates a few trash-files so you may want to keep it in a
 directory.
@@ -42,8 +45,9 @@ wiki.redpill-linpro.com, you can have:
 
 Now working in ~/Wiki/rpl/ and ~/Wiki/vs/ is two different wikis.
 
-3. Usage
-========
+Usage
+=====
+
 Editing:
 	wiki.sh GET Some_Page
 	vim Some_Page
@@ -55,8 +59,9 @@ Editing:
 To create a new page, just edit Some_New_Page.wiki (from a blank file),
 then post it.
 
-4. Feedback
-===========
+Feedback
+========
+
 Comments/suggestions go to: Kristian Lyngstol kristian@bohemians.org
 
 Code at: http://github.com/KristianLyng/wikish , including simple issues if

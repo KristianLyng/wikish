@@ -132,7 +132,7 @@ getit()
 		mv "$PAGE.wiki" "$PAGE.wiki.$TIM"
 	fi
 
-	GET "${PROTO}://${USER}:${PASSWORD}@${HOST}/index.php?title=${PAGE}&action=raw" > "$PAGE.wiki"
+	GET "${PROTO}://${USER}:${PASSWORD}@${HOST}/${PAGE}?action=raw" > "$PAGE.wiki"
 	if [ $? = 0 ]; then
 		debug "$PAGE.wiki created seemingly without errors! Phew.";
 	else
@@ -149,7 +149,7 @@ postit()
  	BURL="${PROTO}://${USER}:${PASSWORD}@${HOST}/${API}"
 	# Welcome to the school of funky shell-nesting.
 	{	
- 		curl -s -c cookie.jar "${BURL}action=query&format=txt&prop=info&intoken=edit&titles=$PAGE" | awk -v page="$PAGE" -v burl="$BURL" '
+ 		curl -s -c cookie.jar "${BURL}action=query&format=txt&prop=info&intoken=edit&title=$PAGE&titles=$PAGE" | awk -v page="$PAGE" -v burl="$BURL" '
 		BEGIN {
 			edittoken="";
 		}
@@ -161,10 +161,10 @@ postit()
 			gsub("+","%2B",edittoken);
 			title=page
 			gsub(" ","%20",title);
-			printf "echo | curl -s --post -k --data-urlencode \"text@"
+			printf "echo | curl -s --post301 -k --data-urlencode \"text@"
 			printf "%s.wiki\" ", page;
 			printf "-b cookie.jar";
-			printf " \"" burl "format=txt&action=edit&title=%s&token=%s\" \n", title, edittoken
+			printf " \"" burl "format=txt&action=edit&title=%s&titles=%s&token=%s\" \n", title, title, edittoken
 		}
 		' | sh
 		if [ ! $? = "0" ]; then
