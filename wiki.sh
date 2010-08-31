@@ -117,6 +117,8 @@ fi
 # Allows for Main_Page and Main_Page.wiki - ie: tab completion.
 PAGE=$(echo $PAGE | sed s/.wiki$//);
 
+# Cheat-code for awesome: Allows wikiedit Customer/Foo etc.
+mkdir -p `dirname "${PAGE}"`
 
 # Gets $PAGE and stores it to $PAGE.wiki
 # Safely backs up any existing $PAGE.wiki to $PAGE.wiki.$TIM
